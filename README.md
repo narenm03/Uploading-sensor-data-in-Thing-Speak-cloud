@@ -1,5 +1,6 @@
-# Uploading temperature sensor data in Thing Speak cloud
-
+# EXP NO-3 Uploading temperature sensor data in Thing Speak cloud
+# NAME: NARENDHARAN.M
+# REG NO:212223230134
 # AIM:
 To monitor the temperature sensor data in the Thing speak using an ESP32 controller.
 
@@ -71,10 +72,76 @@ Automatically act on your data and communicate using third-party services like T
 
 
 # PROGRAM:
+```
+#include "DHT.h"
+#include "ThingSpeak.h"
+#include <WiFi.h>
+
+char ssid[]="NAREN🧃";
+char pass[]="BABEHHH!!!";
+WiFiClient client;
+
+const int out=2;
+long T;
+float temperature=0;
+float humidity=0;
+DHT dht(out, DHT11);
+
+unsigned long myChannelField=3119211;
+const int TemperatureField=1;
+const int HumidityField=2;
+const char* myWriteAPIKey="MBSSL1TWBXFDRM9W";
+
+void setup() {
+  Serial.begin(115200);
+  ThingSpeak.begin(client);
+  dht.begin();
+  pinMode(out,INPUT);
+
+}
+
+void loop() {
+  if(WiFi.status()!=WL_CONNECTED)
+  {
+    Serial.print("Attempting to connect SSID: ");
+    Serial.println(ssid);
+    while(WiFi.status()!=WL_CONNECTED)
+    {
+      WiFi.begin(ssid,pass);
+      Serial.print(".");
+      delay(5000);
+    }
+    Serial.println("\nConnected.");
+  }
+  temperature=dht.readTemperature();
+  humidity=dht.readHumidity();
+
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
+  delay(5000);
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.println(" g.m-3");
+  delay(5000);
+
+  ThingSpeak.setField(TemperatureField,temperature);
+  ThingSpeak.setField(HumidityField,humidity);
+  ThingSpeak.writeFields(myChannelField,myWriteAPIKey);
+  delay(1000);
+}
+```
 
 # CIRCUIT DIAGRAM:
+![WhatsApp Image 2025-10-16 at 09 36 44_e553f3df](https://github.com/user-attachments/assets/2b73ca29-845c-4631-ba34-28a1aeefcf18)
+
 
 # OUTPUT:
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/bf192464-0350-474c-9a1d-65f935bfd5e0" />
+
+<img width="1396" height="893" alt="image" src="https://github.com/user-attachments/assets/452aed32-8513-4483-bc11-a83bacb85b20" />
+
+
 
 # RESULT:
 
